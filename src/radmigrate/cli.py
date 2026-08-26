@@ -2,7 +2,7 @@
 
 The headline command takes a channel and does everything::
 
-    radmigrate https://youtube.com/@yourchannel
+    radmigrate @yourchannel
 
 Everything else exists to answer a question that command might raise: what *would*
 it do (``plan``), why is quality poor (``doctor``), what happened (``status``), and
@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import typer
+from typer.core import TyperGroup
 
 from . import __version__, auth, potoken
 from .config import QualityStrategy, Settings
@@ -26,7 +27,32 @@ from .pipeline import Pipeline
 from .reporting import Mode, Reporter
 from .state import Store
 
+
+class _DefaultToRun(TyperGroup):
+    """Let ``radmigrate @channel`` mean ``radmigrate run @channel``.
+
+    The promise on the tin is one command, so requiring a subcommand for the
+    overwhelmingly common case works against it. Anything that is not a known
+    subcommand and does not look like an option is treated as a channel.
+
+    Implemented by rewriting the args rather than by catching the resulting error:
+    typer vendors its own copy of click, so the ``UsageError`` it raises is not the
+    same class as ``click.UsageError`` and a straightforward ``except`` silently
+    never matches.
+    """
+
+    default_command = "run"
+
+    # ctx/return are left untyped: typer passes its *vendored* click Context, which is
+    # a different class from click.Context, so annotating either one is wrong.
+    def resolve_command(self, ctx: Any, args: list[str]) -> Any:
+        if args and not args[0].startswith("-") and self.get_command(ctx, args[0]) is None:
+            args = [self.default_command, *args]
+        return super().resolve_command(ctx, args)
+
+
 app = typer.Typer(
+    cls=_DefaultToRun,
     name="radmigrate",
     help="Move your YouTube channel to Rad TV in one command.",
     add_completion=False,
@@ -120,7 +146,15 @@ def run(
         str | None, typer.Option("--playlist", help="Create a playlist with this title.")
     ] = None,
     cleanup: Annotated[
-        bool, typer.Option("--cleanup-after-publish", help="Delete local media once processed.")
+        bool,
+        typer.Option(
+            # `--cleanup` leads because typer's help table caps this column at ~22
+            # characters and renders the longer name elided and uncopyable. The
+            # descriptive form still works.
+            "--cleanup",
+            "--cleanup-after-publish",
+            help="Delete local media once Rad confirms processing.",
+        ),
     ] = False,
     create_channel: Annotated[
         bool, typer.Option("--create-channel", help="Create the Rad channel if it is missing.")

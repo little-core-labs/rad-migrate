@@ -13,7 +13,7 @@ reports — the tool handles the mechanics.
 ```bash
 radmigrate doctor @channel     # is this machine capable, and what quality will we get?
 radmigrate plan @channel       # what would move
-radmigrate run @channel        # do it
+radmigrate @channel            # do it (shorthand for `radmigrate run`)
 ```
 
 Always `doctor` before a real run. A migration takes hours, and the failure it catches
@@ -87,7 +87,7 @@ immediately, and poll `migration_status`.
 | Recent only | `--newest 50` or `--since 2024-01-01` |
 | Skip clips and stings | `--min-duration 60` |
 | Preserve channel order on Rad | `--playlist "Channel Name"` |
-| Reclaim disk as it goes | `--cleanup-after-publish` |
+| Reclaim disk as it goes | `--cleanup` |
 
 ## When scripting or parsing output
 

@@ -4,12 +4,12 @@
 
 ```bash
 export RAD_API_KEY=rad_...
-uvx radmigrate run https://youtube.com/@yourchannel
+radmigrate @yourchannel
 ```
 
-That's it. radmigrate downloads your channel in HD and publishes every video to Rad TV
-with its title, description, thumbnail, and original release date — then builds a
-playlist in the original upload order.
+That's the whole thing. radmigrate downloads your channel in HD and publishes every
+video to Rad TV with its title, description, thumbnail, and original release date, then
+builds a playlist in the original upload order.
 
 ```
 radmigrate 0.1.0
@@ -26,19 +26,42 @@ Stop it any time. Run it again and it picks up exactly where it left off.
 
 ---
 
+## Contents
+
+- [Install](#install) · [Your first run](#your-first-run) · [Do you need cookies?](#do-you-need-cookies-probably-not)
+- [Commands](#commands) · [Choosing what moves](#choosing-what-moves) · [What you end up with](#what-you-end-up-with)
+- [Resuming](#resuming-and-running-it-twice) · [Known limits](#known-limits)
+- [Use it from an AI agent](#use-it-from-an-ai-agent) · [Docker](#docker) · [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting) · [Ownership](#ownership)
+
+---
+
 ## Install
 
-Needs **Python 3.10+**, **Node 20+** (22 recommended), and **ffmpeg**.
+There is nothing to build. radmigrate is a Python package — install it and run it.
 
 ```bash
-uvx radmigrate --help          # no install
-uv tool install radmigrate     # or install it
-pipx install radmigrate        # or via pipx
+# Not yet on PyPI. For now, install from source:
+uv tool install git+https://github.com/little-core-labs/radmigrate
+
+# or with pipx
+pipx install git+https://github.com/little-core-labs/radmigrate
 ```
 
-Node is not optional. YouTube requires a JavaScript runtime to hand over HD streams,
-and without it yt-dlp quietly falls back to low quality rather than failing. ffmpeg
-merges YouTube's separate video and audio streams.
+<details>
+<summary>Once published to PyPI</summary>
+
+```bash
+uvx radmigrate @yourchannel     # run without installing
+uv tool install radmigrate      # or install it
+pipx install radmigrate
+```
+
+</details>
+
+### Two things pip cannot install for you
+
+radmigrate needs **Node 20+** (22 recommended) and **ffmpeg** on your PATH.
 
 ```bash
 # macOS
@@ -49,11 +72,56 @@ winget install OpenJS.NodeJS.LTS Gyan.FFmpeg
 sudo apt install nodejs ffmpeg
 ```
 
-Check everything at once:
+Node is not optional and not a build tool — YouTube requires a JavaScript runtime to
+hand over HD stream URLs, and **without it downloads silently drop to low quality
+rather than failing**. ffmpeg merges YouTube's separate video and audio streams.
+
+If you would rather not install any of this, [use the Docker image](#docker) — it ships
+the whole toolchain.
+
+---
+
+## Your first run
+
+Four steps. The first three cost seconds and save hours.
+
+**1. Check the machine.**
 
 ```bash
 radmigrate doctor
 ```
+
+Verifies Node, ffmpeg, yt-dlp, disk space, and your Rad credentials.
+
+**2. Check what quality you'll actually get.**
+
+```bash
+radmigrate doctor @yourchannel
+# ✓ quality probe   1080p available (no cookies)
+```
+
+This probes one real video. It is the single most useful thing you can do before a long
+run — a degraded YouTube session caps everything at 360p, and this catches it in five
+seconds instead of one wasted file at a time.
+
+**3. See what would move.**
+
+```bash
+radmigrate plan @yourchannel
+```
+
+Downloads and publishes nothing. Shows the videos, what's already on Rad, and what your
+filters excluded.
+
+**4. Migrate one video first, then the rest.**
+
+```bash
+radmigrate @yourchannel --limit 1     # one full round trip
+radmigrate @yourchannel               # everything
+```
+
+The `--limit 1` run proves your credentials, the channel, the upload path, and the
+transcode before you commit hours to it.
 
 ---
 
@@ -63,17 +131,10 @@ Most tools in this space open by telling you to export a `cookies.txt`. radmigra
 doesn't, because usually it isn't necessary — and when it is, cookies are the *last*
 resort rather than the first.
 
-Ask before you commit hours to a run:
+`radmigrate doctor @yourchannel` tells you. If it reports 1080p, you're done — no
+account, no setup, nothing to configure.
 
-```bash
-radmigrate doctor @yourchannel
-# ✓ quality probe   1080p available (no cookies)
-```
-
-That probes one real video and reports the resolution YouTube will actually serve. If
-it says 1080p, you are done — no account, no setup, nothing to configure.
-
-If it reports a cap, radmigrate tells you the one command that fixes it, in this order:
+If it reports a cap, radmigrate names the one command that fixes it, in this order:
 
 **1. A proof-of-origin token — no Google account involved.**
 
@@ -85,12 +146,13 @@ YouTube increasingly wants a "proof of origin" token, now bound to each individu
 video id, so tokens can't be extracted by hand any more. This installs a provider that
 mints them: one self-contained binary, verified against the SHA-256 checksum GitHub
 publishes for the pinned release. No Node, no npm, no Docker, no sign-in. It shows you
-exactly what it will download and asks before doing it.
+exactly what it will download and asks before doing it. Remove it with
+`radmigrate setup-potoken --remove`.
 
 **2. Your browser session — only if that isn't enough.**
 
 ```bash
-radmigrate run @yourchannel --cookies-from-browser firefox
+radmigrate @yourchannel --cookies-from-browser firefox
 ```
 
 Reads cookies straight from your browser; no manual export. **Prefer Firefox.** Since
@@ -107,27 +169,31 @@ and says so instead of failing with a decryption error.
 work:
 
 ```bash
-radmigrate run @yourchannel --cookies-file cookies.txt
+radmigrate @yourchannel --cookies-file cookies.txt
 ```
 
 ---
 
-## Usage
+## Commands
 
 ```bash
-radmigrate run @yourchannel                    # migrate everything
-radmigrate plan @yourchannel                   # show what would happen, change nothing
-radmigrate doctor @yourchannel                 # check the machine and the quality
-radmigrate status                              # progress from previous runs
-radmigrate retry @yourchannel                  # retry only what failed
+radmigrate @yourchannel          # migrate (shorthand for `radmigrate run`)
+radmigrate plan @yourchannel     # show what would happen, change nothing
+radmigrate doctor @yourchannel   # check the machine and the quality
+radmigrate status                # progress from previous runs
+radmigrate retry @yourchannel    # retry only what failed
+radmigrate setup-potoken         # install the HD token provider
+radmigrate mcp                   # run as an MCP server for AI agents
 ```
 
 Any of `@handle`, `handle`, a full URL, or a `UC…` channel id works.
 
-### Choosing what moves
+Every command takes `--help`.
+
+## Choosing what moves
 
 ```bash
-radmigrate run @yourchannel \
+radmigrate @yourchannel \
   --newest 50 \                # the 50 most recent
   --since 2024-01-01 \         # nothing older
   --landscape-only \           # skip vertical videos (Shorts)
@@ -135,18 +201,22 @@ radmigrate run @yourchannel \
   --playlist "My Channel"      # build a playlist in upload order
 ```
 
-### Useful flags
-
 | Flag | What it does |
 |---|---|
 | `--channel` | Destination Rad channel, by id or name |
 | `--create-channel` | Create the Rad channel if it doesn't exist |
 | `--limit N` | Cap this run at N videos — good for a first test |
+| `--newest N` | Only the N most recent |
+| `--since YYYY-MM-DD` | Nothing uploaded before this date |
+| `--landscape-only` | Skip vertical videos |
+| `--min-duration` / `--max-duration` | Bounds in seconds |
 | `--quality` | `hd-strict` (default), `hd-preferred`, or `best` |
 | `--min-height` | Quality floor, default 720 |
 | `--allow-sd` | Accept standard definition instead of failing |
-| `--cleanup-after-publish` | Delete local files once Rad confirms processing |
+| `--playlist TITLE` | Build a playlist from what was migrated |
+| `--cleanup` | Delete local files once Rad confirms processing |
 | `--workdir` | Where downloads and resume state live |
+| `--skip-preflight` | Skip the pre-run checks |
 | `--json` | Machine-readable output |
 
 ### Quality is verified, not assumed
@@ -160,6 +230,32 @@ Pass `--allow-sd` if you'd rather have the video at any resolution.
 
 ---
 
+## What you end up with
+
+**On Rad:** one content item per video, with the original title, description,
+thumbnail, and release date, plus a playlist in upload order if you asked for one.
+Portrait video is published as portrait. Videos are marked done only once Rad confirms
+the transcode finished — not merely that the upload succeeded.
+
+**On disk**, under `--workdir` (default `./radmigrate-work`):
+
+```
+radmigrate-work/
+├── state.db                    resume journal
+└── media/
+    └── <channel-id>/
+        └── 2024-03-15 - Video Title [dQw4w9WgXcQ]/
+            ├── video.mp4       the download
+            ├── video.info.json full yt-dlp metadata
+            ├── video.webp      original thumbnail
+            └── thumbnail.jpg   converted for upload
+```
+
+Add `--cleanup` to delete each folder once Rad confirms processing — a channel can
+easily run to tens of gigabytes.
+
+---
+
 ## Resuming, and running it twice
 
 Safe to interrupt, safe to re-run. State advances one video at a time and is written
@@ -169,26 +265,20 @@ Re-running is idempotent because **radmigrate asks Rad what's already on the cha
 rather than trusting a local file. So a second run on a different machine, with no
 local state at all, still won't publish the same video twice.
 
-Local state lives in `<workdir>/state.db` and is a cache, not the source of truth.
-Delete it and the next run re-scans; it still won't double-publish.
-
-Two honest limits on that, both from the Rad API as it stands today:
-
-- **Matching is by title and release date**, not by a stored source id — the API has no
-  field to record where a video came from. That's a strong key in practice (the release
-  date is derived deterministically from the YouTube upload date) but it isn't exact.
-- **Only the 100 most recent items can be listed**, which is the cap on the one
-  available listing endpoint. Past that, radmigrate warns you rather than silently
-  under-reporting.
+`state.db` is a cache, not the source of truth. Delete it and the next run re-scans; it
+still won't double-publish.
 
 ## Known limits
 
+All of these come from the Rad API as it stands today, and are documented in detail —
+with proposed fixes — in [docs/rad-api-notes.md](docs/rad-api-notes.md).
+
 | Limit | Why |
 |---|---|
-| No delete | Rad's API exposes `unpublish` but nothing that removes content or playlists. radmigrate can hide a video, not erase it. |
-| Dedupe past 100 items | The content listing endpoint caps at 100. |
-| No provenance field | Nowhere to stamp the YouTube id, so dedupe falls back to title + date. |
-| Subtitles aren't uploaded | They're downloaded and kept locally; Rad has no caption endpoint. |
+| Dedupe matches on title + release date | The API has no field to record a source id, so matching can't be exact |
+| Dedupe only covers the 100 most recent items | The content listing endpoint caps at 100; radmigrate warns rather than silently under-reporting |
+| No delete | The API exposes `unpublish` but nothing that removes content or playlists |
+| Subtitles aren't uploaded | They're downloaded and kept locally; Rad has no caption endpoint |
 
 ---
 
@@ -202,8 +292,8 @@ Works with Claude Desktop, OpenClaw, Hermes, and anything else that speaks MCP:
 {
   "mcpServers": {
     "radmigrate": {
-      "command": "uvx",
-      "args": ["radmigrate", "mcp"],
+      "command": "radmigrate",
+      "args": ["mcp"],
       "env": { "RAD_API_KEY": "rad_..." }
     }
   }
@@ -228,8 +318,8 @@ Then `/radmigrate @yourchannel`.
 
 ### Scripting
 
-Every command takes `--json` for a machine-readable result on stdout, and streams
-NDJSON progress events on stderr:
+`--json` puts a single parseable result on stdout and streams NDJSON progress events on
+stderr, so the two never interleave:
 
 ```bash
 radmigrate plan @yourchannel --json | jq '.to_migrate'
@@ -239,15 +329,17 @@ radmigrate plan @yourchannel --json | jq '.to_migrate'
 
 ## Docker
 
+Ships Node, ffmpeg, and yt-dlp, so there is nothing to install.
+
 ```bash
 docker run --rm \
   -e RAD_API_KEY \
   -v "$PWD/work:/work" \
-  ghcr.io/little-core-labs/radmigrate run @yourchannel --workdir /work
+  ghcr.io/little-core-labs/radmigrate @yourchannel --workdir /work
 ```
 
-The image ships Node, ffmpeg, and yt-dlp. Browser cookie extraction can't work in a
-container, so mount a `cookies.txt` and use `--cookies-file` if you need it.
+Browser cookie extraction can't work in a container, so mount a `cookies.txt` and use
+`--cookies-file` if you need it.
 
 ---
 
@@ -265,7 +357,8 @@ Flags beat environment variables beat `.env` beat defaults. Copy
 | `RADMIGRATE_COOKIES_FILE` | Path to a `cookies.txt` |
 
 Your API key is never written to state, logs, or `--json` output. Everything radmigrate
-prints passes through a redaction filter first, and there's a test asserting it.
+prints passes through a redaction filter first, and there's a test asserting it. See
+[SECURITY.md](SECURITY.md).
 
 ---
 
@@ -282,11 +375,13 @@ is per-session and lifts.
 Use Firefox or `--cookies-file`.
 
 **A transcode failed on Rad.** The upload worked; the conversion didn't. Retry with
-`radmigrate retry @yourchannel`. Videos are only reported as done once Rad confirms
+`radmigrate retry @yourchannel`. Videos are only reported done once Rad confirms
 processing, so a failure here is visible rather than silent.
 
 **It's slow.** Deliberately. YouTube throttles the extraction API per session, so
 radmigrate paces itself to survive a whole channel rather than sprinting into a block.
+
+More detail: [skills/radmigrate/references/troubleshooting.md](skills/radmigrate/references/troubleshooting.md).
 
 ---
 
@@ -304,11 +399,12 @@ for your channel. It's slower and more manual, but it's the fully sanctioned pat
 
 ## Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ```bash
 git clone https://github.com/little-core-labs/radmigrate && cd radmigrate
 uv sync --dev
 uv run pytest
-uv run ruff check . && uv run mypy src
 ```
 
 Sources and destinations sit behind protocols in
