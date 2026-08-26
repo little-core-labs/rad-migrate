@@ -38,7 +38,9 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-      - run: uv sync --all-extras --dev
+      # --frozen: install exactly what uv.lock pins. Without it a resolver change
+      # can pull a different dependency set than the one that was reviewed.
+      - run: uv sync --frozen --dev
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy src
@@ -56,5 +58,5 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-      - run: uv sync --all-extras --dev --python ${{ matrix.python }}
+      - run: uv sync --frozen --dev --python ${{ matrix.python }}
       - run: uv run pytest -q
