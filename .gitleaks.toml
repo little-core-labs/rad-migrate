@@ -1,0 +1,36 @@
+# gitleaks configuration.
+#
+# Extends the stock ruleset rather than replacing it, so new detectors arrive with
+# gitleaks upgrades.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Known-safe values in this repository"
+
+paths = [
+  # Documents variable *names* only, never values.
+  '''^\.env\.example$''',
+  # Dependency lockfile: hashes, not secrets.
+  '''^uv\.lock$''',
+]
+
+regexes = [
+  # Placeholders in documentation. These are instructions to the reader, not keys.
+  '''RAD_API_KEY=rad_\.\.\.''',
+  '''rad_\.\.\.''',
+  '''<api key>''',
+  '''<token>''',
+
+  # Test fixtures that prove the redaction layer works. They are assembled at
+  # runtime in the source (see tests/test_redact.py) precisely so scanners do not
+  # see a literal, but the reconstructed values still appear in assertion output.
+  '''abcdefghijklmnop''',
+  '''hunter2hunter2hunter2''',
+  '''s3cr3tv4lu3zzzz''',
+  '''value_not_a_real_key''',
+  '''deadbeefcafebabe1234''',
+  '''g\.a000xyzSECRETVALUE''',
+  '''AbCdEfGh12345678''',
+]

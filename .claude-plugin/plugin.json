@@ -1,0 +1,18 @@
+{
+  "name": "radmigrate",
+  "version": "0.1.0",
+  "description": "Move a YouTube channel to Rad TV in one command.",
+  "author": {
+    "name": "Rad"
+  },
+  "homepage": "https://github.com/little-core-labs/radmigrate",
+  "repository": "https://github.com/little-core-labs/radmigrate",
+  "license": "MIT",
+  "keywords": ["youtube", "rad", "video", "migration"],
+  "mcpServers": {
+    "radmigrate": {
+      "command": "uvx",
+      "args": ["radmigrate", "mcp"]
+    }
+  }
+}

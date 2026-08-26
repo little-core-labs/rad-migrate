@@ -1,0 +1,24 @@
+{
+  "name": "radmigrate",
+  "owner": {
+    "name": "Rad",
+    "url": "https://github.com/little-core-labs"
+  },
+  "metadata": {
+    "description": "Move your YouTube channel to Rad TV in one command.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "radmigrate",
+      "source": "./",
+      "description": "Migrate a YouTube channel to Rad TV — HD download, metadata, thumbnails, and an ordered playlist.",
+      "version": "0.1.0",
+      "author": { "name": "Rad" },
+      "homepage": "https://github.com/little-core-labs/radmigrate",
+      "license": "MIT",
+      "keywords": ["youtube", "rad", "video", "migration", "yt-dlp"],
+      "category": "media"
+    }
+  ]
+}

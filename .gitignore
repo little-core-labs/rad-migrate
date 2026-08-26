@@ -1,0 +1,58 @@
+# --- Secrets. Never commit. ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+token.json
+
+# --- Browser / session cookies. Never commit. ---
+cookies.txt
+cookies*.txt
+*_cookies.txt
+*.cookies
+*.bak
+
+# --- Runtime state and downloaded media ---
+radmigrate-work/
+*-work/
+media/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.log
+*.part
+downloaded_archive.txt
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+
+# --- Tooling caches ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

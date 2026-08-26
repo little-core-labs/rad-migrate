@@ -1,0 +1,90 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "radmigrate"
+version = "0.1.0"
+description = "Move your YouTube channel to Rad TV in one command."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+keywords = ["youtube", "rad", "radtv", "video", "migration", "yt-dlp", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "yt-dlp>=2025.1.1",
+    "httpx>=0.27",
+    "typer>=0.12",
+    "rich>=13.7",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "pillow>=10.3",
+    # 2.x renamed FastMCP to MCPServer; the server module targets that API.
+    "mcp>=2.0",
+    "platformdirs>=4.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/little-core-labs/radmigrate"
+Issues = "https://github.com/little-core-labs/radmigrate/issues"
+
+[project.scripts]
+radmigrate = "radmigrate.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/radmigrate"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF", "S", "BLE"]
+ignore = [
+    "B008",   # typer uses function calls in argument defaults by design
+    # Ambiguous-unicode checks. Video titles legitimately contain fullwidth and
+    # smart-quote characters, and the docs quote them on purpose.
+    "RUF001",
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert (that is the point), reach into internals to test them directly, and
+# contain fake credentials on purpose to prove redaction works.
+"tests/**" = ["S101", "SLF001", "S105", "S106"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unreachable = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["yt_dlp.*", "PIL.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+asyncio_mode = "auto"
