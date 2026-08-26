@@ -1,18 +1,18 @@
-# radmigrate
+# rad-migrate
 
 **Move your YouTube channel to Rad TV in one command.**
 
 ```bash
 export RAD_API_KEY=rad_...
-radmigrate @yourchannel
+rad-migrate @yourchannel
 ```
 
-That's the whole thing. radmigrate downloads your channel in HD and publishes every
+That's the whole thing. rad-migrate downloads your channel in HD and publishes every
 video to Rad TV with its title, description, thumbnail, and original release date, then
 builds a playlist in the original upload order.
 
 ```
-radmigrate 0.1.0
+rad-migrate 0.1.0
   ✓ node 22.22 · ffmpeg 8.1 · yt-dlp 2026.08 · Rad auth ok
   ✓ quality probe  1080p available (no cookies)
   → channel: Your Channel  ·  47 videos
@@ -38,30 +38,30 @@ Stop it any time. Run it again and it picks up exactly where it left off.
 
 ## Install
 
-There is nothing to build. radmigrate is a Python package — install it and run it.
+There is nothing to build. rad-migrate is a Python package — install it and run it.
 
 ```bash
 # Not yet on PyPI. For now, install from source:
-uv tool install git+https://github.com/little-core-labs/radmigrate
+uv tool install git+https://github.com/little-core-labs/rad-migrate
 
 # or with pipx
-pipx install git+https://github.com/little-core-labs/radmigrate
+pipx install git+https://github.com/little-core-labs/rad-migrate
 ```
 
 <details>
 <summary>Once published to PyPI</summary>
 
 ```bash
-uvx radmigrate @yourchannel     # run without installing
-uv tool install radmigrate      # or install it
-pipx install radmigrate
+uvx rad-migrate @yourchannel     # run without installing
+uv tool install rad-migrate      # or install it
+pipx install rad-migrate
 ```
 
 </details>
 
 ### Two things pip cannot install for you
 
-radmigrate needs **Node 20+** (22 recommended) and **ffmpeg** on your PATH.
+rad-migrate needs **Node 20+** (22 recommended) and **ffmpeg** on your PATH.
 
 ```bash
 # macOS
@@ -88,7 +88,7 @@ Four steps. The first three cost seconds and save hours.
 **1. Check the machine.**
 
 ```bash
-radmigrate doctor
+rad-migrate doctor
 ```
 
 Verifies Node, ffmpeg, yt-dlp, disk space, and your Rad credentials.
@@ -96,7 +96,7 @@ Verifies Node, ffmpeg, yt-dlp, disk space, and your Rad credentials.
 **2. Check what quality you'll actually get.**
 
 ```bash
-radmigrate doctor @yourchannel
+rad-migrate doctor @yourchannel
 # ✓ quality probe   1080p available (no cookies)
 ```
 
@@ -107,7 +107,7 @@ seconds instead of one wasted file at a time.
 **3. See what would move.**
 
 ```bash
-radmigrate plan @yourchannel
+rad-migrate plan @yourchannel
 ```
 
 Downloads and publishes nothing. Shows the videos, what's already on Rad, and what your
@@ -116,8 +116,8 @@ filters excluded.
 **4. Migrate one video first, then the rest.**
 
 ```bash
-radmigrate @yourchannel --limit 1     # one full round trip
-radmigrate @yourchannel               # everything
+rad-migrate @yourchannel --limit 1     # one full round trip
+rad-migrate @yourchannel               # everything
 ```
 
 The `--limit 1` run proves your credentials, the channel, the upload path, and the
@@ -127,19 +127,19 @@ transcode before you commit hours to it.
 
 ## Do you need cookies? Probably not.
 
-Most tools in this space open by telling you to export a `cookies.txt`. radmigrate
+Most tools in this space open by telling you to export a `cookies.txt`. rad-migrate
 doesn't, because usually it isn't necessary — and when it is, cookies are the *last*
 resort rather than the first.
 
-`radmigrate doctor @yourchannel` tells you. If it reports 1080p, you're done — no
+`rad-migrate doctor @yourchannel` tells you. If it reports 1080p, you're done — no
 account, no setup, nothing to configure.
 
-If it reports a cap, radmigrate names the one command that fixes it, in this order:
+If it reports a cap, rad-migrate names the one command that fixes it, in this order:
 
 **1. A proof-of-origin token — no Google account involved.**
 
 ```bash
-radmigrate setup-potoken
+rad-migrate setup-potoken
 ```
 
 YouTube increasingly wants a "proof of origin" token, now bound to each individual
@@ -147,17 +147,17 @@ video id, so tokens can't be extracted by hand any more. This installs a provide
 mints them: one self-contained binary, verified against the SHA-256 checksum GitHub
 publishes for the pinned release. No Node, no npm, no Docker, no sign-in. It shows you
 exactly what it will download and asks before doing it. Remove it with
-`radmigrate setup-potoken --remove`.
+`rad-migrate setup-potoken --remove`.
 
 **2. Your browser session — only if that isn't enough.**
 
 ```bash
-radmigrate @yourchannel --cookies-from-browser firefox
+rad-migrate @yourchannel --cookies-from-browser firefox
 ```
 
 Reads cookies straight from your browser; no manual export. **Prefer Firefox.** Since
 Chrome 127, Windows binds the cookie encryption key to the Chrome process, so no
-external tool can read Chrome, Edge, or Brave cookies there. radmigrate detects this
+external tool can read Chrome, Edge, or Brave cookies there. rad-migrate detects this
 and says so instead of failing with a decryption error.
 
 > Worth knowing: this is the *risky* rung, not the easy one. Bulk-downloading against
@@ -169,7 +169,7 @@ and says so instead of failing with a decryption error.
 work:
 
 ```bash
-radmigrate @yourchannel --cookies-file cookies.txt
+rad-migrate @yourchannel --cookies-file cookies.txt
 ```
 
 ---
@@ -177,13 +177,13 @@ radmigrate @yourchannel --cookies-file cookies.txt
 ## Commands
 
 ```bash
-radmigrate @yourchannel          # migrate (shorthand for `radmigrate run`)
-radmigrate plan @yourchannel     # show what would happen, change nothing
-radmigrate doctor @yourchannel   # check the machine and the quality
-radmigrate status                # progress from previous runs
-radmigrate retry @yourchannel    # retry only what failed
-radmigrate setup-potoken         # install the HD token provider
-radmigrate mcp                   # run as an MCP server for AI agents
+rad-migrate @yourchannel          # migrate (shorthand for `rad-migrate run`)
+rad-migrate plan @yourchannel     # show what would happen, change nothing
+rad-migrate doctor @yourchannel   # check the machine and the quality
+rad-migrate status                # progress from previous runs
+rad-migrate retry @yourchannel    # retry only what failed
+rad-migrate setup-potoken         # install the HD token provider
+rad-migrate mcp                   # run as an MCP server for AI agents
 ```
 
 Any of `@handle`, `handle`, a full URL, or a `UC…` channel id works.
@@ -193,7 +193,7 @@ Every command takes `--help`.
 ## Choosing what moves
 
 ```bash
-radmigrate @yourchannel \
+rad-migrate @yourchannel \
   --newest 50 \                # the 50 most recent
   --since 2024-01-01 \         # nothing older
   --landscape-only \           # skip vertical videos (Shorts)
@@ -237,10 +237,10 @@ thumbnail, and release date, plus a playlist in upload order if you asked for on
 Portrait video is published as portrait. Videos are marked done only once Rad confirms
 the transcode finished — not merely that the upload succeeded.
 
-**On disk**, under `--workdir` (default `./radmigrate-work`):
+**On disk**, under `--workdir` (default `./rad-migrate-work`):
 
 ```
-radmigrate-work/
+rad-migrate-work/
 ├── state.db                    resume journal
 └── media/
     └── <channel-id>/
@@ -261,7 +261,7 @@ easily run to tens of gigabytes.
 Safe to interrupt, safe to re-run. State advances one video at a time and is written
 immediately, so a crash or a Ctrl-C loses at most the video in flight.
 
-Re-running is idempotent because **radmigrate asks Rad what's already on the channel**
+Re-running is idempotent because **rad-migrate asks Rad what's already on the channel**
 rather than trusting a local file. So a second run on a different machine, with no
 local state at all, still won't publish the same video twice.
 
@@ -276,7 +276,7 @@ with proposed fixes — in [docs/rad-api-notes.md](docs/rad-api-notes.md).
 | Limit | Why |
 |---|---|
 | Dedupe matches on title + release date | The API has no field to record a source id, so matching can't be exact |
-| Dedupe only covers the 100 most recent items | The content listing endpoint caps at 100; radmigrate warns rather than silently under-reporting |
+| Dedupe only covers the 100 most recent items | The content listing endpoint caps at 100; rad-migrate warns rather than silently under-reporting |
 | No delete | The API exposes `unpublish` but nothing that removes content or playlists |
 | Subtitles aren't uploaded | They're downloaded and kept locally; Rad has no caption endpoint |
 
@@ -291,8 +291,8 @@ Works with Claude Desktop, OpenClaw, Hermes, and anything else that speaks MCP:
 ```json
 {
   "mcpServers": {
-    "radmigrate": {
-      "command": "radmigrate",
+    "rad-migrate": {
+      "command": "rad-migrate",
       "args": ["mcp"],
       "env": { "RAD_API_KEY": "rad_..." }
     }
@@ -310,11 +310,11 @@ reads the same journal the CLI does, so you and the agent watch the same run.
 ### Claude Code
 
 ```bash
-/plugin marketplace add little-core-labs/radmigrate
-/plugin install radmigrate
+/plugin marketplace add little-core-labs/rad-migrate
+/plugin install rad-migrate
 ```
 
-Then `/radmigrate @yourchannel`.
+Then `/rad-migrate @yourchannel`.
 
 ### Scripting
 
@@ -322,7 +322,7 @@ Then `/radmigrate @yourchannel`.
 stderr, so the two never interleave:
 
 ```bash
-radmigrate plan @yourchannel --json | jq '.to_migrate'
+rad-migrate plan @yourchannel --json | jq '.to_migrate'
 ```
 
 ---
@@ -335,7 +335,7 @@ Ships Node, ffmpeg, and yt-dlp, so there is nothing to install.
 docker run --rm \
   -e RAD_API_KEY \
   -v "$PWD/work:/work" \
-  ghcr.io/little-core-labs/radmigrate @yourchannel --workdir /work
+  ghcr.io/little-core-labs/rad-migrate @yourchannel --workdir /work
 ```
 
 Browser cookie extraction can't work in a container, so mount a `cookies.txt` and use
@@ -351,12 +351,12 @@ Flags beat environment variables beat `.env` beat defaults. Copy
 | Variable | Purpose |
 |---|---|
 | `RAD_API_KEY` | Required. Your Rad TV API key. |
-| `RADMIGRATE_CHANNEL` | Destination channel |
-| `RADMIGRATE_WORKDIR` | Downloads and state, default `./radmigrate-work` |
-| `RADMIGRATE_COOKIES_FROM_BROWSER` | `firefox`, `chrome`, … |
-| `RADMIGRATE_COOKIES_FILE` | Path to a `cookies.txt` |
+| `RAD_MIGRATE_CHANNEL` | Destination channel |
+| `RAD_MIGRATE_WORKDIR` | Downloads and state, default `./rad-migrate-work` |
+| `RAD_MIGRATE_COOKIES_FROM_BROWSER` | `firefox`, `chrome`, … |
+| `RAD_MIGRATE_COOKIES_FILE` | Path to a `cookies.txt` |
 
-Your API key is never written to state, logs, or `--json` output. Everything radmigrate
+Your API key is never written to state, logs, or `--json` output. Everything rad-migrate
 prints passes through a redaction filter first, and there's a test asserting it. See
 [SECURITY.md](SECURITY.md).
 
@@ -364,10 +364,10 @@ prints passes through a redaction filter first, and there's a test asserting it.
 
 ## Troubleshooting
 
-**Everything downloads at 360p.** Run `radmigrate doctor @yourchannel`. Almost always a
-missing JS runtime (install Node 22+) or a degraded session (`radmigrate setup-potoken`).
+**Everything downloads at 360p.** Run `rad-migrate doctor @yourchannel`. Almost always a
+missing JS runtime (install Node 22+) or a degraded session (`rad-migrate setup-potoken`).
 
-**"Sign in to confirm you're not a bot".** YouTube is throttling. radmigrate backs off
+**"Sign in to confirm you're not a bot".** YouTube is throttling. rad-migrate backs off
 automatically and reduces its API calls per video. If it persists, wait — the throttle
 is per-session and lifts.
 
@@ -375,13 +375,13 @@ is per-session and lifts.
 Use Firefox or `--cookies-file`.
 
 **A transcode failed on Rad.** The upload worked; the conversion didn't. Retry with
-`radmigrate retry @yourchannel`. Videos are only reported done once Rad confirms
+`rad-migrate retry @yourchannel`. Videos are only reported done once Rad confirms
 processing, so a failure here is visible rather than silent.
 
 **It's slow.** Deliberately. YouTube throttles the extraction API per session, so
-radmigrate paces itself to survive a whole channel rather than sprinting into a block.
+rad-migrate paces itself to survive a whole channel rather than sprinting into a block.
 
-More detail: [skills/radmigrate/references/troubleshooting.md](skills/radmigrate/references/troubleshooting.md).
+More detail: [skills/rad-migrate/references/troubleshooting.md](skills/rad-migrate/references/troubleshooting.md).
 
 ---
 
@@ -402,14 +402,14 @@ for your channel. It's slower and more manual, but it's the fully sanctioned pat
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
-git clone https://github.com/little-core-labs/radmigrate && cd radmigrate
+git clone https://github.com/little-core-labs/rad-migrate && cd rad-migrate
 uv sync --dev
 uv run pytest
 ```
 
 Sources and destinations sit behind protocols in
-[`source/base.py`](src/radmigrate/source/base.py) and
-[`dest/base.py`](src/radmigrate/dest/base.py) — new ones are welcome.
+[`source/base.py`](src/rad_migrate/source/base.py) and
+[`dest/base.py`](src/rad_migrate/dest/base.py) — new ones are welcome.
 
 ## License
 

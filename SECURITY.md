@@ -3,7 +3,7 @@
 ## Reporting a vulnerability
 
 Please report security issues privately via
-[GitHub Security Advisories](https://github.com/little-core-labs/radmigrate/security/advisories/new).
+[GitHub Security Advisories](https://github.com/little-core-labs/rad-migrate/security/advisories/new).
 
 Do not open a public issue for a vulnerability.
 
@@ -12,7 +12,7 @@ within 30 days for confirmed issues.
 
 ## What this tool handles
 
-radmigrate touches credentials, so it is worth being explicit about what it does with
+rad-migrate touches credentials, so it is worth being explicit about what it does with
 them.
 
 **Rad API key.** Read from the environment, a `.env` file, or `--api-key`. Held in
@@ -23,10 +23,10 @@ events, or any log.
 
 **YouTube cookies.** Only read when you explicitly ask for them, via
 `--cookies-from-browser` or `--cookies-file`. Passed straight to yt-dlp and never
-copied, cached, or transmitted anywhere except YouTube. radmigrate has no telemetry.
+copied, cached, or transmitted anywhere except YouTube. rad-migrate has no telemetry.
 
 **Redaction.** Everything the tool prints passes through a redaction filter first
-([`src/radmigrate/redact.py`](src/radmigrate/redact.py)). It masks registered secret
+([`src/rad_migrate/redact.py`](src/rad_migrate/redact.py)). It masks registered secret
 values literally, plus a pattern layer covering bearer tokens, credential assignments,
 Netscape cookie lines, session cookie names, and signed-URL parameters. The pattern
 layer exists to catch secrets we were never told about — a token echoed inside an
@@ -36,16 +36,16 @@ mode.
 
 ## Third-party binaries
 
-`radmigrate setup-potoken` downloads a proof-of-origin token provider. This is the one
+`rad-migrate setup-potoken` downloads a proof-of-origin token provider. This is the one
 place the tool fetches an executable, and it is deliberately constrained:
 
 - it never runs automatically — only when you invoke that command;
-- the release is **pinned** in [`src/radmigrate/potoken.py`](src/radmigrate/potoken.py),
+- the release is **pinned** in [`src/rad_migrate/potoken.py`](src/rad_migrate/potoken.py),
   never resolved as "latest";
 - every file is verified against the SHA-256 digest GitHub publishes for that asset,
   fetched from the API rather than from the download itself;
 - the URL and hash are printed before anything is written, and you are asked to confirm;
-- everything installs under radmigrate's own data directory, and `--remove` deletes it.
+- everything installs under rad-migrate's own data directory, and `--remove` deletes it.
 
 If a checksum does not match, installation aborts and nothing is written.
 
@@ -60,7 +60,7 @@ If a checksum does not match, installation aborts and nothing is written.
 ## Scope
 
 In scope: credential leakage, path traversal, unsafe deserialisation, dependency
-vulnerabilities, and anything that causes radmigrate to write outside its working
+vulnerabilities, and anything that causes rad-migrate to write outside its working
 directory.
 
 Out of scope: vulnerabilities in yt-dlp, ffmpeg, or the Rad API itself — please report

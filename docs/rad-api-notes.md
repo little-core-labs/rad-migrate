@@ -1,6 +1,6 @@
 # Rad TV API — integration findings and change requests
 
-Findings from building [radmigrate](../README.md), a YouTube→Rad TV migration tool, and
+Findings from building [rad-migrate](../README.md), a YouTube→Rad TV migration tool, and
 running a full live migration against production.
 
 **Environment:** `api.rad.live`, server `1.9.0`, MCP protocol `2025-06-18`, 45 tools.
@@ -300,7 +300,7 @@ arbitrary metadata, no external id.
 
 ### Impact
 Re-running an import cannot reliably distinguish "already imported" from "new".
-radmigrate falls back to matching on normalised title plus release date. That is a
+rad-migrate falls back to matching on normalised title plus release date. That is a
 workable key but not exact: it breaks on retitled videos, and on genuinely distinct
 videos sharing a title and upload date.
 
@@ -351,7 +351,7 @@ published, so deduplication is impossible past that boundary. Source channels in
 migration case routinely have hundreds or thousands of videos — the one we tested
 against has 818, another has 1,119. This is the hard limit on doing the job correctly.
 
-radmigrate detects `hasMoreContent` and warns the user rather than silently
+rad-migrate detects `hasMoreContent` and warns the user rather than silently
 under-reporting, but it cannot solve it client-side.
 
 ### Proposed contract
@@ -429,10 +429,10 @@ MCP `structuredContent` is the natural home for this if the prose must stay for
 human readers.
 
 ### Client impact: none
-radmigrate already prefers a structured payload when present and only falls back to
+rad-migrate already prefers a structured payload when present and only falls back to
 scraping. Returning structured JSON requires **no client change** — the regexes simply
 stop being reached. See `_parse_publish` in
-[`src/radmigrate/dest/radtv.py`](../src/radmigrate/dest/radtv.py) for the precedence.
+[`src/rad_migrate/dest/radtv.py`](../src/rad_migrate/dest/radtv.py) for the precedence.
 
 ### Done when
 - `publish_video` returns machine-readable `contentId` and ingestion targets
@@ -524,13 +524,13 @@ behaved correctly throughout.
 
 ## Reference client
 
-[radmigrate](../README.md) exercises all of this and is written to adopt the fixes with
+[rad-migrate](../README.md) exercises all of this and is written to adopt the fixes with
 no changes where possible:
 
 - structured responses are already preferred over prose (RAD-8)
 - provenance matching already prefers a stamped external id and only falls back to
   title+date (RAD-6) — see `DestinationContent.matches` in
-  [`src/radmigrate/models.py`](../src/radmigrate/models.py)
+  [`src/rad_migrate/models.py`](../src/rad_migrate/models.py)
 - both playlist DID forms are already accepted (RAD-3)
 - `pending` transcode state is already handled (see "Behaviour to document")
 

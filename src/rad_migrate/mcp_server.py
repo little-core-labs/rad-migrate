@@ -29,7 +29,7 @@ from .reporting import Mode, Reporter
 from .state import Store
 
 mcp_app = MCPServer(
-    "radmigrate",
+    "rad-migrate",
     version=__version__,
     instructions=(
         "Migrates a YouTube channel to Rad TV. Call check_environment first; if it "
@@ -156,7 +156,7 @@ def start_migration(
         thread = threading.Thread(
             target=_run_job,
             args=(job_id, channel, settings),
-            name=f"radmigrate-{job_id}",
+            name=f"rad-migrate-{job_id}",
             daemon=True,
         )
         with _lock:

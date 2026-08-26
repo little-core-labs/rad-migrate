@@ -14,7 +14,7 @@ binary is a supply-chain decision, so:
   and the digest is fetched from the API rather than from the download itself;
 * the resolved URL and hash are shown before anything is written;
 * it only runs when the user asks for it, never automatically;
-* everything lands under radmigrate's own data directory, and ``uninstall`` removes it.
+* everything lands under rad-migrate's own data directory, and ``uninstall`` removes it.
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ _BINARY_NAME = "bgutil-pot"
 
 _TIMEOUT = httpx.Timeout(120.0, connect=15.0)
 _HEADERS = {
-    "User-Agent": "radmigrate",
+    "User-Agent": "rad-migrate",
     "X-GitHub-Api-Version": "2022-11-28",
     "Accept": "application/vnd.github+json",
 }
@@ -170,7 +170,7 @@ def _download(asset: Asset, reporter: Reporter) -> bytes:
     if asset.sha256 is None:
         raise RadMigrateError(
             f"GitHub publishes no checksum for {asset.name} — refusing to install it.",
-            hint="radmigrate will not install a binary it cannot verify.",
+            hint="rad-migrate will not install a binary it cannot verify.",
         )
     if digest != asset.sha256:
         raise RadMigrateError(

@@ -10,9 +10,9 @@ from pathlib import Path
 
 import pytest
 
-from radmigrate.config import Settings
-from radmigrate.models import DestinationContent, ItemState, VideoItem
-from radmigrate.pipeline import Pipeline
+from rad_migrate.config import Settings
+from rad_migrate.models import DestinationContent, ItemState, VideoItem
+from rad_migrate.pipeline import Pipeline
 
 CHANNEL = "UC_test"
 

@@ -8,7 +8,7 @@ import pytest
 import typer
 from click.testing import CliRunner
 
-from radmigrate.cli import app
+from rad_migrate.cli import app
 
 runner = CliRunner()
 cli = typer.main.get_command(app)
@@ -19,7 +19,7 @@ def invoke(*args: str, **env: str):  # type: ignore[no-untyped-def]
 
 
 class TestDefaultCommand:
-    """`radmigrate @channel` must mean `radmigrate run @channel`.
+    """`rad-migrate @channel` must mean `rad-migrate run @channel`.
 
     The product promise is one command; requiring a subcommand for the common case
     undercuts it.
@@ -27,14 +27,14 @@ class TestDefaultCommand:
 
     def test_bare_channel_routes_to_run(self, tmp_path) -> None:  # type: ignore[no-untyped-def]
         # Reaches `run` and fails on the missing key, rather than "no such command".
-        result = invoke("@somechannel", RADMIGRATE_WORKDIR=str(tmp_path), RAD_API_KEY="")
+        result = invoke("@somechannel", RAD_MIGRATE_WORKDIR=str(tmp_path), RAD_API_KEY="")
         assert "No such command" not in result.output
         assert "No Rad API key" in result.output
 
     def test_bare_url_routes_to_run(self, tmp_path) -> None:  # type: ignore[no-untyped-def]
         result = invoke(
             "https://youtube.com/@somechannel",
-            RADMIGRATE_WORKDIR=str(tmp_path),
+            RAD_MIGRATE_WORKDIR=str(tmp_path),
             RAD_API_KEY="",
         )
         assert "No such command" not in result.output
@@ -58,7 +58,7 @@ class TestDefaultCommand:
             assert name in result.output
 
     def test_version(self) -> None:
-        from radmigrate import __version__
+        from rad_migrate import __version__
 
         result = invoke("--version")
         assert result.exit_code == 0
@@ -73,7 +73,7 @@ class TestJsonOutput:
     """`--json` must put a single parseable document on stdout and nothing else."""
 
     def test_status_json_is_parseable(self, tmp_path) -> None:  # type: ignore[no-untyped-def]
-        result = invoke("status", "--json", RADMIGRATE_WORKDIR=str(tmp_path))
+        result = invoke("status", "--json", RAD_MIGRATE_WORKDIR=str(tmp_path))
         assert result.exit_code == 0
         payload = json.loads(result.stdout)
         assert payload["ok"] is True
@@ -81,7 +81,7 @@ class TestJsonOutput:
 
     def test_failure_json_carries_the_hint(self, tmp_path) -> None:  # type: ignore[no-untyped-def]
         """An agent needs the remedy, not just the error."""
-        result = invoke("run", "@x", "--json", RADMIGRATE_WORKDIR=str(tmp_path), RAD_API_KEY="")
+        result = invoke("run", "@x", "--json", RAD_MIGRATE_WORKDIR=str(tmp_path), RAD_API_KEY="")
         payload = json.loads(result.stdout)
         assert payload["ok"] is False
         assert "RAD_API_KEY" in payload["hint"]
@@ -97,7 +97,7 @@ class TestSelectionValidation:
             "600",
             "--max-duration",
             "60",
-            RADMIGRATE_WORKDIR=str(tmp_path),
+            RAD_MIGRATE_WORKDIR=str(tmp_path),
         )
         assert result.exit_code != 0
         assert "nothing can match" in result.output

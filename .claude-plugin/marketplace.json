@@ -1,5 +1,5 @@
 {
-  "name": "radmigrate",
+  "name": "rad-migrate",
   "owner": {
     "name": "Rad",
     "url": "https://github.com/little-core-labs"
@@ -10,12 +10,12 @@
   },
   "plugins": [
     {
-      "name": "radmigrate",
+      "name": "rad-migrate",
       "source": "./",
       "description": "Migrate a YouTube channel to Rad TV — HD download, metadata, thumbnails, and an ordered playlist.",
       "version": "0.1.0",
       "author": { "name": "Rad" },
-      "homepage": "https://github.com/little-core-labs/radmigrate",
+      "homepage": "https://github.com/little-core-labs/rad-migrate",
       "license": "MIT",
       "keywords": ["youtube", "rad", "video", "migration", "yt-dlp"],
       "category": "media"

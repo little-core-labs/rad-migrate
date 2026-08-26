@@ -13,14 +13,14 @@ import pytest
 import typer
 from click.testing import CliRunner
 
-from radmigrate.cli import app
+from rad_migrate.cli import app
 
 ROOT = Path(__file__).resolve().parents[1]
 README = ROOT / "README.md"
 runner = CliRunner()
 cli = typer.main.get_command(app)
 
-#: Flags belonging to tools other than radmigrate that legitimately appear in the docs.
+#: Flags belonging to tools other than rad-migrate that legitimately appear in the docs.
 FOREIGN_FLAGS = {
     "--rm",  # docker
     "--source",  # gitleaks / docker
@@ -73,7 +73,7 @@ class TestReadmeAccuracy:
         undocumented = [
             name
             for name in cli.commands  # type: ignore[attr-defined]
-            if f"radmigrate {name}" not in text
+            if f"rad-migrate {name}" not in text
         ]
         assert not undocumented, f"commands missing from the README: {undocumented}"
 
@@ -81,16 +81,16 @@ class TestReadmeAccuracy:
         """The pitch is one command; the first example should demonstrate exactly that."""
         first_block = re.search(r"```bash\n(.*?)```", README.read_text(encoding="utf-8"), re.DOTALL)
         assert first_block is not None
-        assert "radmigrate @yourchannel" in first_block.group(1)
+        assert "rad-migrate @yourchannel" in first_block.group(1)
 
     def test_install_instructions_are_currently_accurate(self) -> None:
-        """radmigrate is not on PyPI yet, so `uvx radmigrate` must not be presented as
+        """rad-migrate is not on PyPI yet, so `uvx rad-migrate` must not be presented as
         the working install path. Remove this test when the package is published."""
         text = README.read_text(encoding="utf-8")
         install = text.split("## Install", 1)[1].split("---", 1)[0]
         primary = install.split("<details>", 1)[0]
         assert "git+https://github.com/" in primary
-        assert "uvx radmigrate" not in primary
+        assert "uvx rad-migrate" not in primary
 
     @pytest.mark.parametrize(
         "path",
@@ -99,9 +99,9 @@ class TestReadmeAccuracy:
             "CONTRIBUTING.md",
             "docs/rad-api-notes.md",
             ".env.example",
-            "src/radmigrate/source/base.py",
-            "src/radmigrate/dest/base.py",
-            "skills/radmigrate/references/troubleshooting.md",
+            "src/rad_migrate/source/base.py",
+            "src/rad_migrate/dest/base.py",
+            "skills/rad-migrate/references/troubleshooting.md",
         ],
     )
     def test_linked_files_exist(self, path: str) -> None:
@@ -109,14 +109,14 @@ class TestReadmeAccuracy:
 
 
 class TestSkillAccuracy:
-    SKILL = ROOT / "skills" / "radmigrate" / "SKILL.md"
+    SKILL = ROOT / "skills" / "rad-migrate" / "SKILL.md"
 
     def test_skill_commands_exist(self) -> None:
-        """Only commands inside code fences are checked; prose mentions radmigrate
+        """Only commands inside code fences are checked; prose mentions rad-migrate
         in ordinary sentences and matching those produces noise, not signal."""
         text = self.SKILL.read_text(encoding="utf-8")
         blocks = "\n".join(re.findall(r"```[a-z]*\n(.*?)```", text, re.DOTALL))
-        referenced = set(re.findall(r"^radmigrate ([a-z][a-z-]+)", blocks, re.MULTILINE))
+        referenced = set(re.findall(r"^rad-migrate ([a-z][a-z-]+)", blocks, re.MULTILINE))
         unknown = sorted(referenced - set(cli.commands))  # type: ignore[attr-defined]
         assert not unknown, f"SKILL.md references unknown commands: {unknown}"
 

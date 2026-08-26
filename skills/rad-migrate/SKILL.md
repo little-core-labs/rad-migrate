@@ -1,9 +1,9 @@
 ---
-name: radmigrate
-description: Migrate a YouTube channel to Rad TV — download in HD and publish with metadata, thumbnails, and an ordered playlist. Use when someone wants to move, copy, back up, or republish a YouTube channel to Rad TV, or asks about radmigrate, HD download quality caps, YouTube bot checks, PO tokens, or failed Rad transcodes.
+name: rad-migrate
+description: Migrate a YouTube channel to Rad TV — download in HD and publish with metadata, thumbnails, and an ordered playlist. Use when someone wants to move, copy, back up, or republish a YouTube channel to Rad TV, or asks about rad-migrate, HD download quality caps, YouTube bot checks, PO tokens, or failed Rad transcodes.
 ---
 
-# radmigrate
+# rad-migrate
 
 Moves a YouTube channel to Rad TV. Your job is to drive the CLI and interpret what it
 reports — the tool handles the mechanics.
@@ -11,9 +11,9 @@ reports — the tool handles the mechanics.
 ## The short version
 
 ```bash
-radmigrate doctor @channel     # is this machine capable, and what quality will we get?
-radmigrate plan @channel       # what would move
-radmigrate @channel            # do it (shorthand for `radmigrate run`)
+rad-migrate doctor @channel     # is this machine capable, and what quality will we get?
+rad-migrate plan @channel       # what would move
+rad-migrate @channel            # do it (shorthand for `rad-migrate run`)
 ```
 
 Always `doctor` before a real run. A migration takes hours, and the failure it catches
@@ -34,7 +34,7 @@ usually worse than waiting.
 Escalate in this order, and stop as soon as quality is sufficient:
 
 1. **Nothing.** Often 1080p works with no auth at all. `doctor` tells you.
-2. **`radmigrate setup-potoken`.** One verified binary, no Google account. Prefer this.
+2. **`rad-migrate setup-potoken`.** One verified binary, no Google account. Prefer this.
 3. **`--cookies-from-browser firefox`.** Only if the token route isn't enough.
 
 Never suggest cookies before the token route. Bulk-downloading against a signed-in
@@ -48,7 +48,7 @@ Firefox works.
 ### Start small on an unfamiliar channel
 
 ```bash
-radmigrate run @channel --limit 1
+rad-migrate run @channel --limit 1
 ```
 
 One full round trip proves the credentials, the channel resolution, the upload path, and
@@ -70,7 +70,7 @@ the transcode before committing hours. Then run without `--limit`.
 
 Ctrl-C, a crash, and a killed process all resume cleanly. Never suggest starting over or
 deleting state to "clean up" — re-running the same command is the recovery path. Nothing
-gets published twice; radmigrate asks Rad what's already there rather than trusting
+gets published twice; rad-migrate asks Rad what's already there rather than trusting
 local files.
 
 ### Long runs

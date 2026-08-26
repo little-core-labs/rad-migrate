@@ -5,13 +5,13 @@ Thanks for taking a look.
 ## Setup
 
 ```bash
-git clone https://github.com/little-core-labs/radmigrate && cd radmigrate
+git clone https://github.com/little-core-labs/rad-migrate && cd rad-migrate
 uv sync --dev
 uv run pytest
 ```
 
 You will also need **Node 20+** and **ffmpeg** on your PATH for anything that touches
-real downloads. `uv run radmigrate doctor` tells you what is missing.
+real downloads. `uv run rad-migrate doctor` tells you what is missing.
 
 ## Before opening a pull request
 
@@ -39,9 +39,9 @@ over the full history.
 
 Both sit behind protocols:
 
-- [`src/radmigrate/source/base.py`](src/radmigrate/source/base.py) — where content comes
+- [`src/rad_migrate/source/base.py`](src/rad_migrate/source/base.py) — where content comes
   from
-- [`src/radmigrate/dest/base.py`](src/radmigrate/dest/base.py) — where it goes
+- [`src/rad_migrate/dest/base.py`](src/rad_migrate/dest/base.py) — where it goes
 
 Implement the protocol, add it to the relevant `__init__.py`, and wire it into
 `config.py`. New destinations are welcome; the Rad TV implementation is the reference.
@@ -64,7 +64,7 @@ the concrete next action. Use it.
 
 ## Reporting bugs
 
-Include the output of `radmigrate doctor` and, where relevant, `radmigrate <cmd> --json`.
+Include the output of `rad-migrate doctor` and, where relevant, `rad-migrate <cmd> --json`.
 Both are already redacted, but do skim them before pasting.
 
 For Rad API behaviour, [`docs/rad-api-notes.md`](docs/rad-api-notes.md) records what is

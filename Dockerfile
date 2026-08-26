@@ -1,10 +1,10 @@
-# radmigrate — YouTube to Rad TV.
+# rad-migrate — YouTube to Rad TV.
 #
 # Ships the whole toolchain, which is most of the setup burden: Python, Node (required
 # for HD — YouTube's stream URLs are behind a JS challenge), and ffmpeg.
 #
 #   docker run --rm -e RAD_API_KEY -v "$PWD/work:/work" \
-#     ghcr.io/little-core-labs/radmigrate run @yourchannel --workdir /work
+#     ghcr.io/little-core-labs/rad-migrate run @yourchannel --workdir /work
 #
 # Browser cookie extraction cannot work in a container. If you need cookies, mount a
 # cookies.txt and pass --cookies-file /work/cookies.txt.
@@ -37,16 +37,16 @@ COPY --from=build /dist/*.whl /tmp/
 RUN pip install --no-cache-dir /tmp/*.whl && rm -f /tmp/*.whl
 
 # Downloads and resume state belong on a mounted volume, not in the image layer.
-ENV RADMIGRATE_WORKDIR=/work \
-    RADMIGRATE_DATA_DIR=/work/.radmigrate \
+ENV RAD_MIGRATE_WORKDIR=/work \
+    RAD_MIGRATE_DATA_DIR=/work/.rad-migrate \
     PYTHONUNBUFFERED=1
 VOLUME ["/work"]
 WORKDIR /work
 
 # Unprivileged: nothing here needs root, and the workdir is a mount.
-RUN useradd --create-home --uid 10001 radmigrate \
-    && mkdir -p /work && chown -R radmigrate:radmigrate /work
-USER radmigrate
+RUN useradd --create-home --uid 10001 rad-migrate \
+    && mkdir -p /work && chown -R rad-migrate:rad-migrate /work
+USER rad-migrate
 
-ENTRYPOINT ["radmigrate"]
+ENTRYPOINT ["rad-migrate"]
 CMD ["--help"]

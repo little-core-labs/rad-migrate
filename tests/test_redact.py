@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from radmigrate.redact import (
+from rad_migrate.redact import (
     MASK,
     clear_registered_secrets,
     redact,
@@ -128,7 +128,7 @@ def test_full_output_path_is_redacted() -> None:
     import io
     import json
 
-    from radmigrate.reporting import Mode, Reporter
+    from rad_migrate.reporting import Mode, Reporter
 
     register_secret(SECRET)
     out, err = io.StringIO(), io.StringIO()

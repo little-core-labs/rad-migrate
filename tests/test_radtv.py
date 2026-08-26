@@ -11,8 +11,8 @@ import json
 
 import pytest
 
-from radmigrate.dest.radtv import RadTVDestination, _summary_for
-from radmigrate.errors import DestinationError
+from rad_migrate.dest.radtv import RadTVDestination, _summary_for
+from rad_migrate.errors import DestinationError
 
 CONTENT_ID = "did:rad.live:content/feature/8b1f4c2e-0000-4aaa-9bbb-1234567890ab"
 VIDEO_URL = "https://api.rad.live/ingestion/abc123def456"
@@ -133,13 +133,13 @@ class TestRetryClassification:
 
 class TestSummary:
     def test_short_description_passes_through(self) -> None:
-        from radmigrate.models import VideoItem
+        from rad_migrate.models import VideoItem
 
         item = VideoItem(source_id="v", channel_id="c", description="Short.")
         assert _summary_for(item) == "Short."
 
     def test_long_description_is_trimmed_on_a_boundary(self) -> None:
-        from radmigrate.models import VideoItem
+        from rad_migrate.models import VideoItem
 
         body = ("Sentence number one. " * 400).strip()
         item = VideoItem(source_id="v", channel_id="c", description=body)
@@ -148,6 +148,6 @@ class TestSummary:
         assert result.endswith("…")
 
     def test_missing_description_is_empty(self) -> None:
-        from radmigrate.models import VideoItem
+        from rad_migrate.models import VideoItem
 
         assert _summary_for(VideoItem(source_id="v", channel_id="c")) == ""

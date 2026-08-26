@@ -15,7 +15,7 @@ cookies*.txt
 *.bak
 
 # --- Runtime state and downloaded media ---
-radmigrate-work/
+rad-migrate-work/
 *-work/
 media/
 *.db

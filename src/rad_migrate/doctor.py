@@ -140,7 +140,7 @@ def check_ffmpeg(settings: Settings) -> list[Check]:
                 Level.WARN,
                 "not found",
                 hint=(
-                    "Without ffprobe, radmigrate cannot verify that a download really "
+                    "Without ffprobe, rad-migrate cannot verify that a download really "
                     "is HD — the quality guard is skipped."
                 ),
                 command=_ffmpeg_install_command(),
@@ -182,7 +182,7 @@ def check_potoken() -> Check:
             "Not needed unless YouTube caps your quality. If it does, this fixes it "
             "without signing in to anything."
         ),
-        command="radmigrate setup-potoken",
+        command="rad-migrate setup-potoken",
     )
 
 
@@ -208,7 +208,7 @@ def check_cookies(settings: Settings) -> Check:
 
     usable = [b.name for b in auth.detect_browsers() if b.usable]
     detail = "not using cookies"
-    hint = "Most channels do not need them. radmigrate will say so if yours does."
+    hint = "Most channels do not need them. rad-migrate will say so if yours does."
     if usable:
         hint += f" Available if needed: {', '.join(usable)}."
     return Check("cookies", Level.OK, detail, hint=hint)
@@ -251,7 +251,7 @@ def check_destination(settings: Settings) -> Check:
             "rad auth",
             Level.FAIL,
             "no API key",
-            hint="radmigrate cannot publish without one.",
+            hint="rad-migrate cannot publish without one.",
             command="export RAD_API_KEY=...   (or put it in .env)",
         )
     from .dest.radtv import RadTVDestination

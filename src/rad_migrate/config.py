@@ -21,7 +21,7 @@ from .errors import ConfigError
 from .redact import register_secret
 
 DEFAULT_API_URL = "https://api.rad.live"
-DEFAULT_WORKDIR = Path("radmigrate-work")
+DEFAULT_WORKDIR = Path("rad-migrate-work")
 DEFAULT_MIN_HEIGHT = 720
 
 
@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     """Runtime configuration."""
 
     model_config = SettingsConfigDict(
-        env_prefix="RADMIGRATE_",
+        env_prefix="RAD_MIGRATE_",
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
@@ -65,7 +65,7 @@ class Settings(BaseSettings):
         SecretStr | None,
         Field(
             default=None,
-            validation_alias=AliasChoices("RAD_API_KEY", "RADMIGRATE_API_KEY", "api_key"),
+            validation_alias=AliasChoices("RAD_API_KEY", "RAD_MIGRATE_API_KEY", "api_key"),
             description="Rad TV API key.",
         ),
     ]

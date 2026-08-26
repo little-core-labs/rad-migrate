@@ -465,7 +465,7 @@ class Pipeline:
                 self.reporter.error(
                     f"transcode failed for {item.title[:60]}"
                     + (f" (job {status.job_id})" if status.job_id else ""),
-                    hint="Retry with: radmigrate retry --failed",
+                    hint="Retry with: rad-migrate retry --failed",
                 )
                 return
             time.sleep(_VERIFY_INTERVAL)
@@ -536,7 +536,7 @@ class Pipeline:
             self.reporter.warn(f"Cancelled — {message}. Re-run to resume.")
         elif result.failed:
             self.reporter.warn(f"Done with errors — {message}.")
-            self.reporter.info("Retry the failures with: radmigrate retry --failed")
+            self.reporter.info("Retry the failures with: rad-migrate retry --failed")
         else:
             self.reporter.success(f"Done — {message}.")
 

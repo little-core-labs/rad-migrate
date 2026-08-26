@@ -10,12 +10,12 @@ import io
 
 import pytest
 
-from radmigrate.reporting import Mode, Reporter
+from rad_migrate.reporting import Mode, Reporter
 
 
 class TestToolRegistration:
     async def test_expected_tools_are_exposed(self) -> None:
-        from radmigrate.mcp_server import mcp_app
+        from rad_migrate.mcp_server import mcp_app
 
         names = {tool.name for tool in await mcp_app.list_tools()}
         assert names == {
@@ -30,14 +30,14 @@ class TestToolRegistration:
 
     async def test_every_tool_is_documented(self) -> None:
         """Descriptions are how an agent picks the right tool."""
-        from radmigrate.mcp_server import mcp_app
+        from rad_migrate.mcp_server import mcp_app
 
         for tool in await mcp_app.list_tools():
             assert tool.description, f"{tool.name} has no description"
 
     async def test_start_migration_advertises_that_it_is_async(self) -> None:
         """An agent must not sit blocking on a migration that takes hours."""
-        from radmigrate.mcp_server import mcp_app
+        from rad_migrate.mcp_server import mcp_app
 
         tool = next(t for t in await mcp_app.list_tools() if t.name == "start_migration")
         assert "background" in (tool.description or "").lower()
@@ -46,7 +46,7 @@ class TestToolRegistration:
 
 class TestStdoutDiscipline:
     def test_server_reporter_never_writes_to_stdout(self) -> None:
-        from radmigrate.mcp_server import _reporter
+        from rad_migrate.mcp_server import _reporter
 
         reporter = _reporter()
         assert reporter.mode is Mode.QUIET
@@ -78,8 +78,8 @@ class TestStdoutDiscipline:
         assert {e["event"] for e in events} == {"step", "upload_progress"}
 
     def test_ytdlp_is_configured_to_avoid_stdout(self) -> None:
-        from radmigrate.config import Settings
-        from radmigrate.source.youtube import YouTubeSource
+        from rad_migrate.config import Settings
+        from rad_migrate.source.youtube import YouTubeSource
 
         opts = YouTubeSource(Settings())._base_opts()
         assert opts["logtostderr"] is True
@@ -90,14 +90,14 @@ class TestStdoutDiscipline:
 class TestErrorShape:
     def test_errors_are_returned_not_raised(self) -> None:
         """A crashed tool call would take down the agent's session."""
-        from radmigrate.errors import ConfigError
-        from radmigrate.mcp_server import _error
+        from rad_migrate.errors import ConfigError
+        from rad_migrate.mcp_server import _error
 
         result = _error(ConfigError("no key", hint="set RAD_API_KEY"))
         assert result == {"ok": False, "error": "no key", "hint": "set RAD_API_KEY"}
 
     def test_unexpected_errors_are_still_wrapped(self) -> None:
-        from radmigrate.mcp_server import _error
+        from rad_migrate.mcp_server import _error
 
         result = _error(RuntimeError("boom"))
         assert result["ok"] is False
@@ -107,7 +107,7 @@ class TestErrorShape:
 class TestPotokenGate:
     def test_install_requires_explicit_confirmation(self) -> None:
         """Downloading and running a third-party binary is never implicit."""
-        from radmigrate.mcp_server import install_potoken_provider
+        from rad_migrate.mcp_server import install_potoken_provider
 
         result = install_potoken_provider(confirm=False)
         if not result.get("ok"):

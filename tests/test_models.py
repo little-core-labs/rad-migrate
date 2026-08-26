@@ -6,8 +6,8 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from radmigrate.media import safe_filename
-from radmigrate.models import DestinationContent, ItemState, VideoItem
+from rad_migrate.media import safe_filename
+from rad_migrate.models import DestinationContent, ItemState, VideoItem
 
 
 def make_item(**kwargs: object) -> VideoItem:

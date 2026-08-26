@@ -10,10 +10,10 @@ Two causes, in order of likelihood.
 
 **No JavaScript runtime.** YouTube's HD stream URLs are behind a signature/n challenge
 that has to be solved in JS. Without node, yt-dlp doesn't fail — it silently serves what
-it can, which is low quality. `radmigrate doctor` reports node's version; install 22+.
+it can, which is low quality. `rad-migrate doctor` reports node's version; install 22+.
 
 **A degraded session.** YouTube throttles per session and per IP. Once flagged, HD
-formats stop being offered. Run `radmigrate setup-potoken` — a proof-of-origin token
+formats stop being offered. Run `rad-migrate setup-potoken` — a proof-of-origin token
 provider fixes this without any account. Failing that, wait; the throttle lifts.
 
 Do not reach for `--allow-sd` to make the error go away. It doesn't fix quality; it
@@ -28,20 +28,20 @@ the next run picks it up. Usually resolves on its own once the session recovers.
 ### Quality probe says "could not probe"
 
 The channel's first video may be private, members-only, or region-locked. Not
-necessarily a problem for the migration — try `radmigrate plan` and see whether
+necessarily a problem for the migration — try `rad-migrate plan` and see whether
 discovery works.
 
 ## YouTube auth and throttling
 
 ### "Sign in to confirm you're not a bot"
 
-YouTube's bot check. radmigrate backs off exponentially and collapses to a single player
+YouTube's bot check. rad-migrate backs off exponentially and collapses to a single player
 client, which cuts extraction API calls per video by roughly 4x and lets a session
 survive far more videos. Let it run.
 
 If it persists across runs:
 
-1. `radmigrate setup-potoken`
+1. `rad-migrate setup-potoken`
 2. `--cookies-from-browser firefox`
 3. Wait a few hours. Session throttles expire.
 
@@ -66,7 +66,7 @@ tasks from the tray — and retry. On Windows this is usually moot; see above.
 The upload succeeded and Rad's conversion didn't. Retry:
 
 ```bash
-radmigrate retry @channel
+rad-migrate retry @channel
 ```
 
 This re-uploads onto the existing content record rather than re-downloading. If the same
@@ -84,12 +84,12 @@ record behind.
 ### Empty content records on the channel
 
 A publish call that returns a truncated response may still have created a record. This
-is why radmigrate does not retry the create step — retrying multiplies orphans. Clean
+is why rad-migrate does not retry the create step — retrying multiplies orphans. Clean
 them up in the Rad web app.
 
 ### "Your account has more than one channel"
 
-radmigrate won't guess which one. Pass `--channel` with the id or name, or
+rad-migrate won't guess which one. Pass `--channel` with the id or name, or
 `--create-channel` to make a new one named after the source channel.
 
 ### Could not list existing Rad content
@@ -130,7 +130,7 @@ a re-scan, and Rad-side dedupe still prevents double-publishing.
 ## Reading the state
 
 ```bash
-radmigrate status
+rad-migrate status
 ```
 
 | State | Meaning |

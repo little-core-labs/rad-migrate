@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from radmigrate.models import VideoItem
-from radmigrate.source.youtube import YouTubeSource
+from rad_migrate.models import VideoItem
+from rad_migrate.source.youtube import YouTubeSource
 
 rename = YouTubeSource._name_folder_now_that_the_date_is_known
 

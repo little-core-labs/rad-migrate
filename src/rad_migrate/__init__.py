@@ -1,4 +1,4 @@
-"""radmigrate — move your YouTube channel to Rad TV in one command."""
+"""rad-migrate — move your YouTube channel to Rad TV in one command."""
 
 from .auth import activate_plugins as _activate_plugins
 

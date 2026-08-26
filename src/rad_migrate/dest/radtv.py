@@ -116,7 +116,7 @@ class RadTVDestination:
             "Authorization": f"Bearer {self._token}",
             "Content-Type": "application/json",
             "Accept": "application/json, text/event-stream",
-            "User-Agent": "radmigrate",
+            "User-Agent": "rad-migrate",
         }
 
     def call(
@@ -227,7 +227,7 @@ class RadTVDestination:
             return channels[0][0]
         elif len(channels) > 1 and create_as is None:
             raise DestinationError(
-                "Your account has more than one channel, so radmigrate cannot guess.",
+                "Your account has more than one channel, so rad-migrate cannot guess.",
                 hint="Pass --channel with one of: " + ", ".join(t for _, t in channels),
             )
 
@@ -235,7 +235,7 @@ class RadTVDestination:
             return self.create_channel(create_as)
         raise DestinationError(
             "No Rad channel available to publish into.",
-            hint="Create one in Rad, or pass --create-channel to have radmigrate make it.",
+            hint="Create one in Rad, or pass --create-channel to have rad-migrate make it.",
         )
 
     def list_channels(self) -> list[tuple[str, str]]:
@@ -443,7 +443,7 @@ class RadTVDestination:
                     url,
                     headers={
                         "Authorization": f"Bearer {self._token}",
-                        "User-Agent": "radmigrate",
+                        "User-Agent": "rad-migrate",
                     },
                     files={"file": (path.name, cast("IO[bytes]", reader), content_type)},
                     timeout=httpx.Timeout(3600.0, connect=30.0, write=3600.0, read=600.0),
@@ -538,7 +538,7 @@ class RadTVDestination:
             "create_playlist_with_items",
             {
                 "title": title,
-                "summary": f"{title} — migrated from YouTube by radmigrate.",
+                "summary": f"{title} — migrated from YouTube by rad-migrate.",
                 "contentIds": content_ids,
                 "channel": channel_id,
             },

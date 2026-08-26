@@ -3,7 +3,7 @@
 The stream contract matters and is deliberate:
 
 * **stdout** carries the final machine-readable result, and nothing else, and only
-  in ``--json`` mode. An agent or CI job can `radmigrate plan ... --json | jq`
+  in ``--json`` mode. An agent or CI job can `rad-migrate plan ... --json | jq`
   without filtering noise.
 * **stderr** carries everything else — the pretty console in human mode, NDJSON
   progress events in json mode.
@@ -11,7 +11,7 @@ The stream contract matters and is deliberate:
 That split also keeps the MCP stdio server safe: stdout there belongs to the JSON-RPC
 protocol, so the server constructs a reporter that never touches it.
 
-Every string leaving this module goes through :func:`~radmigrate.redact.redact`.
+Every string leaving this module goes through :func:`~rad_migrate.redact.redact`.
 """
 
 from __future__ import annotations

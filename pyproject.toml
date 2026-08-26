@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "radmigrate"
+name = "rad-migrate"
 version = "0.1.0"
 description = "Move your YouTube channel to Rad TV in one command."
 readme = "README.md"
@@ -35,11 +35,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/little-core-labs/radmigrate"
-Issues = "https://github.com/little-core-labs/radmigrate/issues"
+Homepage = "https://github.com/little-core-labs/rad-migrate"
+Issues = "https://github.com/little-core-labs/rad-migrate/issues"
 
 [project.scripts]
-radmigrate = "radmigrate.cli:main"
+rad-migrate = "rad_migrate.cli:main"
 
 [dependency-groups]
 dev = [
@@ -51,7 +51,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/radmigrate"]
+packages = ["src/rad_migrate"]
 
 [tool.ruff]
 line-length = 100

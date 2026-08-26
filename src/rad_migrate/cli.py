@@ -2,7 +2,7 @@
 
 The headline command takes a channel and does everything::
 
-    radmigrate @yourchannel
+    rad-migrate @yourchannel
 
 Everything else exists to answer a question that command might raise: what *would*
 it do (``plan``), why is quality poor (``doctor``), what happened (``status``), and
@@ -29,7 +29,7 @@ from .state import Store
 
 
 class _DefaultToRun(TyperGroup):
-    """Let ``radmigrate @channel`` mean ``radmigrate run @channel``.
+    """Let ``rad-migrate @channel`` mean ``rad-migrate run @channel``.
 
     The promise on the tin is one command, so requiring a subcommand for the
     overwhelmingly common case works against it. Anything that is not a known
@@ -53,7 +53,7 @@ class _DefaultToRun(TyperGroup):
 
 app = typer.Typer(
     cls=_DefaultToRun,
-    name="radmigrate",
+    name="rad-migrate",
     help="Move your YouTube channel to Rad TV in one command.",
     add_completion=False,
     no_args_is_help=True,
@@ -87,7 +87,7 @@ def _fail(reporter: Reporter, exc: RadMigrateError) -> None:
 
 def _version_callback(value: bool) -> None:
     if value:
-        typer.echo(f"radmigrate {__version__}")
+        typer.echo(f"rad-migrate {__version__}")
         raise typer.Exit
 
 

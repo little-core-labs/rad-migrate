@@ -11,10 +11,10 @@ import json
 
 import pytest
 
-from radmigrate.config import Settings
-from radmigrate.dest.radtv import RadTVDestination, _classify_upload_error
-from radmigrate.errors import DestinationError, TransientError
-from radmigrate.models import DestinationContent, VideoItem
+from rad_migrate.config import Settings
+from rad_migrate.dest.radtv import RadTVDestination, _classify_upload_error
+from rad_migrate.errors import DestinationError, TransientError
+from rad_migrate.models import DestinationContent, VideoItem
 
 CONTENT_ID = "did:rad.live:content/feature/aaaabbbb-cccc-dddd-eeee-ffff00001111"
 SOURCE_ID = "vIdEoIdAbCd"
@@ -257,7 +257,7 @@ class TestPlaylistIdParsing:
     def _create(self, payload: str) -> str | None:
         class Fake(RadTVDestination):
             def __init__(self) -> None:
-                from radmigrate.reporting import null_reporter
+                from rad_migrate.reporting import null_reporter
 
                 self.reporter = null_reporter()
 

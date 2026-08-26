@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from radmigrate.config import QualityStrategy, Settings
-from radmigrate.errors import ConfigError, SourceError
-from radmigrate.source.youtube import (
+from rad_migrate.config import QualityStrategy, Settings
+from rad_migrate.errors import ConfigError, SourceError
+from rad_migrate.source.youtube import (
     build_format,
     classify_error,
     is_permanent,
@@ -99,7 +99,7 @@ class TestErrorClassification:
         ],
     )
     def test_throttling_is_recognised(self, message: str) -> None:
-        from radmigrate.errors import RateLimitError
+        from rad_migrate.errors import RateLimitError
 
         assert classify_error(message) is RateLimitError
 

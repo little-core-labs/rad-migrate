@@ -9,7 +9,7 @@ is frequently all that is needed. No account, no setup, no risk.
 
 **Tier 1 — a PO token provider.** YouTube increasingly demands a "proof of origin"
 token, now bound to each individual video id, so tokens cannot be extracted by hand
-any more — it takes a provider plugin. ``radmigrate setup-potoken`` installs one as a
+any more — it takes a provider plugin. ``rad-migrate setup-potoken`` installs one as a
 single self-contained binary: no Node, no npm, no Docker, and **no Google account**.
 
 **Tier 2 — browser cookies.** Effective, but this is the *risky* rung, not the easy
@@ -36,7 +36,7 @@ from pathlib import Path
 
 import platformdirs
 
-APP_NAME = "radmigrate"
+APP_NAME = "rad-migrate"
 
 #: Browsers yt-dlp can read, in the order we would recommend trying them.
 _BROWSER_PREFERENCE = ("firefox", "brave", "edge", "chromium", "vivaldi", "opera", "chrome")
@@ -51,7 +51,7 @@ class AuthTier(str, Enum):
 
 def data_dir() -> Path:
     """Where we keep the PO token provider and its plugin."""
-    override = os.environ.get("RADMIGRATE_DATA_DIR")
+    override = os.environ.get("RAD_MIGRATE_DATA_DIR")
     if override:
         return Path(override)
     return Path(platformdirs.user_data_dir(APP_NAME, appauthor=False))
@@ -60,7 +60,7 @@ def data_dir() -> Path:
 def plugin_dir() -> Path:
     """A private yt-dlp plugin directory.
 
-    Kept inside radmigrate's own data directory rather than the user's global
+    Kept inside rad-migrate's own data directory rather than the user's global
     ``~/yt-dlp-plugins`` so installing (or removing) a provider never disturbs their
     other yt-dlp usage.
     """
@@ -326,7 +326,7 @@ def recommend(
         advice = AuthAdvice(
             tier=AuthTier.POTOKEN,
             headline="Install a proof-of-origin token provider — no Google account needed.",
-            command="radmigrate setup-potoken",
+            command="rad-migrate setup-potoken",
             notes=[
                 "One self-contained binary. No Node, no npm, no Docker, no sign-in.",
                 "This is the safest fix: it does not put your YouTube account anywhere "
@@ -346,7 +346,7 @@ def recommend(
             return AuthAdvice(
                 tier=AuthTier.BROWSER_COOKIES,
                 headline=f"Try your signed-in session: --cookies-from-browser {browser}",
-                command=f"radmigrate <channel> --cookies-from-browser {browser}",
+                command=f"rad-migrate <channel> --cookies-from-browser {browser}",
                 notes=[
                     "Sign in to YouTube in that browser first, then close it.",
                     "Heads up: bulk downloading against your own account carries some "
@@ -362,7 +362,7 @@ def recommend(
         return AuthAdvice(
             tier=AuthTier.COOKIE_FILE,
             headline="No browser on this machine has readable cookies.",
-            command="radmigrate <channel> --cookies-file cookies.txt",
+            command="rad-migrate <channel> --cookies-file cookies.txt",
             notes=notes,
         )
 

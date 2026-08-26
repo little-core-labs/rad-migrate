@@ -12,7 +12,7 @@ import json
 
 import pytest
 
-from radmigrate.dest.sse import (
+from rad_migrate.dest.sse import (
     SSEParseError,
     ToolCallError,
     extract_tool_text,

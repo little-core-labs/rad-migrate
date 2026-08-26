@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from radmigrate.models import RETRYABLE, ItemState, VideoItem
-from radmigrate.state import Store
+from rad_migrate.models import RETRYABLE, ItemState, VideoItem
+from rad_migrate.state import Store
 
 CHANNEL = "UC_test_channel"
 

@@ -5,7 +5,7 @@ reasoning intact:
 
 * **A JS runtime is mandatory for HD.** YouTube's signature/n challenges must be
   solved to get HD URLs. Without node, yt-dlp silently degrades to low quality rather
-  than failing, so :mod:`radmigrate.doctor` checks for it up front.
+  than failing, so :mod:`rad_migrate.doctor` checks for it up front.
 * **The throttle is on the player API, not on bytes.** yt-dlp queries several player
   clients per video by default, so a handful of videos can exhaust a session's budget
   while barely downloading anything. When we detect throttling we collapse to a single
@@ -98,7 +98,7 @@ def validate_ydl_opts(opts: dict[str, Any], reporter: Reporter | None = None) ->
     if unknown and reporter:
         reporter.warn(
             f"yt-dlp does not recognise these options and will ignore them: {', '.join(unknown)}",
-            hint="This is a radmigrate bug — please report it with your yt-dlp version.",
+            hint="This is a rad-migrate bug — please report it with your yt-dlp version.",
         )
     return unknown
 
@@ -290,7 +290,7 @@ class YouTubeSource:
             "no_warnings": True,
             "noprogress": True,
             "consoletitle": False,
-            # Nothing from yt-dlp may reach stdout: under `radmigrate mcp` that stream
+            # Nothing from yt-dlp may reach stdout: under `rad-migrate mcp` that stream
             # is the JSON-RPC transport, and one stray line corrupts the protocol.
             "logtostderr": True,
             "ignoreerrors": False,  # we handle failures per item, with state
@@ -637,7 +637,7 @@ class YouTubeSource:
                 f"Got {info.height}p but need at least {minimum}p — discarded, will retry.",
                 hint=(
                     "Usually a degraded YouTube session. Try --cookies-from-browser "
-                    "chrome, or wait and re-run; radmigrate picks up where it left off."
+                    "chrome, or wait and re-run; rad-migrate picks up where it left off."
                 ),
             )
 
@@ -660,7 +660,7 @@ def _channel_hint(message: str) -> str | None:
     if any(sign in lowered for sign in _RATE_LIMIT_SIGNS):
         return (
             "YouTube wants to verify this session. Pass --cookies-from-browser chrome "
-            "(or firefox/edge) so radmigrate can use your signed-in session."
+            "(or firefox/edge) so rad-migrate can use your signed-in session."
         )
     if "not found" in lowered or "does not exist" in lowered:
         return "Check the handle. It should look like @yourchannel."
