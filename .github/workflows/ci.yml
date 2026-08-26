@@ -18,7 +18,7 @@ jobs:
     name: secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # scan full history, not just the tip
       # Run gitleaks from its published image rather than gitleaks-action, which
@@ -34,8 +34,8 @@ jobs:
     name: lint & types
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       # --frozen: install exactly what uv.lock pins. Without it a resolver change
@@ -54,8 +54,8 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         python: ["3.10", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       - run: uv sync --frozen --dev --python ${{ matrix.python }}
