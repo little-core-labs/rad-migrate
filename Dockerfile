@@ -9,7 +9,7 @@
 # Browser cookie extraction cannot work in a container. If you need cookies, mount a
 # cookies.txt and pass --cookies-file /work/cookies.txt.
 
-FROM python:3.13-slim AS base
+FROM python:3.15-slim AS base
 
 # Node 22 from nodesource; ffmpeg from Debian.
 RUN set -eux; \
